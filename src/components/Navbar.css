@@ -1,0 +1,26 @@
+.navbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.navbar button {
+    margin: 5px;
+    padding: 10px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    border-radius: 2px;
+    color: #CDCDFF;
+    transition: 0.5s ease-in-out;
+}
+
+.navbar .brand-name {
+    padding: 5px;
+    margin: 5px;
+}
+
+.navbar button:hover {
+    color: #23283E;
+    background-color: #CDCDFF;
+}

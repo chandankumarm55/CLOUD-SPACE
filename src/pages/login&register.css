@@ -1,0 +1,169 @@
+.register-login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    /* Arrange children vertically */
+    align-items: center;
+    justify-content: center;
+    max-width: 400px;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 2rem;
+    border: 1px solid black;
+    background-color: transparent;
+    opacity: 0.6;
+    /* Optional: Background color for the form */
+    box-shadow: 0 0 10px white;
+    /* Optional: Add a shadow for better visibility */
+    border-radius: 8px;
+    /* Optional: Rounded corners */
+}
+
+.container h1 {
+    margin-bottom: 1rem;
+    /* Space between heading and first input */
+}
+
+.register-login-container input {
+    font-size: medium;
+    width: 100%;
+    padding: 0.5rem;
+    margin: 1rem 0;
+    color: #CDCDFf;
+    outline: none;
+    background-color: transparent;
+    /* Space between inputs */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.register-login-container button {
+    margin-top: 0.4rem;
+    margin-bottom: 0.4rem;
+    width: 100%;
+    padding: 0.4rem;
+    background-color: transparent;
+    color: #CDCDFf;
+    border: 1px solid white;
+    border-radius: 4px;
+    font-size: medium;
+    transition: 0.5s ease-in-out;
+    cursor: pointer;
+}
+
+.register-login-container button:hover {
+    opacity: 0.7;
+    background-color: #CDCDFf;
+    color: #23283E;
+}
+
+.register-login-container a {
+    text-decoration: none;
+    color: #5a5b5d;
+}
+
+.register-login-container span {
+    text-decoration: none;
+    color: #5a5b5d;
+    cursor: pointer;
+}
+
+.folder-file {
+    display: flex;
+    gap: 1rem;
+}
+
+
+/* Optional: Add some padding around the form */
+
+.file {
+    max-width: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.folder-file {
+    display: flex;
+    padding: 1rem;
+}
+
+
+/* Optional: Add some padding around the form */
+
+.file {
+    max-width: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.file button {
+    cursor: pointer;
+    background-color: #CDCDFf;
+    color: #23283E;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.file-open {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+}
+
+.file-open input {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.file-open button {
+    padding: 0.5rem 1rem;
+    background-color: #23283E;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.file-open button:hover {
+    background-color: #555;
+}
+
+.show-file-folder {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    max-height: 400px;
+    width: 100%;
+    overflow: auto;
+    align-items: center;
+}

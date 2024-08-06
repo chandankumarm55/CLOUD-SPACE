@@ -1,0 +1,17 @@
+* {
+    margin: 0%;
+    padding: 0%;
+}
+
+body,
+html {
+    height: 100%;
+}
+
+.App {
+    overflow: hidden;
+    width: 100dvw;
+    height: 100dvh;
+    background-color: #23283E;
+    color: #CDCDFF;
+}
