@@ -17,6 +17,7 @@ import './login&register.css'
 
 const Main = () => {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false)
     const [isOpen, setIsOpen] = useState(false);
     const { currentFolder } = useSelector((state) => state.files);
     const { user } = useSelector(store => store.user);
@@ -36,7 +37,7 @@ const Main = () => {
 
     useEffect(() => {
         if (!user) return;
-
+        setLoading(true)
         const fetchFilesAndFolders = async () => {
             const folderQuery = query(collection(firestore, 'folders'), where('userId', '==', user.uid));
             const fileQuery = query(collection(firestore, 'files'), where('userId', '==', user.uid));
@@ -50,9 +51,11 @@ const Main = () => {
 
                 dispatch(setFiles(fetchedFiles));
                 dispatch(setFolder(fetchedFolders));
+                setLoading(false)
             } catch (error) {
                 console.error(error.message);
                 toast.error(error.message);
+                setLoading(false)
             }
         };
 
@@ -115,23 +118,35 @@ const Main = () => {
     return (
         <div className="home-container">
             <Navbar />
+            {
+                loading ? (
+                    <div className='loading'>
+                        <div class="loader"></div>
+                    </div>
 
-            <div className="folder-file">
-                <div className="file">
-                    <button onClick={ () => setIsOpen(!isOpen) }><FaFile size={ 30 } /></button>
-                    { isOpen && (
-                        <div className="modal-overlay">
-                            <form onSubmit={ handleFileUpload } className='file-open' ref={ formRef }>
-                                <input type='file' onChange={ handleFileChange } />
-                                <button type='submit'>Upload file</button>
-                            </form>
+                ) : (
+                    <>
+                        <div className="folder-file">
+                            <div className="file">
+                                <button onClick={ () => setIsOpen(!isOpen) }><FaFile size={ 30 } /></button>
+                                { isOpen && (
+                                    <div className="modal-overlay">
+                                        <form onSubmit={ handleFileUpload } className='file-open' ref={ formRef }>
+                                            <input type='file' onChange={ handleFileChange } />
+                                            <button type='submit'>Upload file</button>
+                                        </form>
+                                    </div>
+                                ) }
+                            </div>
+                            <Folder currentFolder={ currentFolder } />
                         </div>
-                    ) }
-                </div>
-                <Folder currentFolder={ currentFolder } />
-            </div>
-            <Breadrumbs setCurrentFolder={ (folder) => dispatch(setCurrentFolder(folder)) } />
-            <ShowFileFolder setCurrentFolder={ (folder) => dispatch(setCurrentFolder(folder)) } />
+                        <Breadrumbs setCurrentFolder={ (folder) => dispatch(setCurrentFolder(folder)) } />
+                        <ShowFileFolder setCurrentFolder={ (folder) => dispatch(setCurrentFolder(folder)) } />
+                    </>
+                )
+            }
+
+
         </div>
     );
 }
