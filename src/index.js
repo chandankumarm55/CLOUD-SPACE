@@ -8,16 +8,11 @@ import store, { persistor } from './store/store';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
-root.render( <
-    Provider store = { store } >
-    <
-    PersistGate loading = { null }
-    persistor = { persistor } >
-    <
-    Toaster / >
-    <
-    App / >
-    <
-    /PersistGate> < /
-    Provider >
+root.render(
+  <Provider store={store}>
+    <PersistGate loading={null} persistor={persistor}>
+      <Toaster />
+      <App />
+    </PersistGate>
+  </Provider>
 );

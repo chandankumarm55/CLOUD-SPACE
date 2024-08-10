@@ -19,21 +19,30 @@
     padding: 0.5rem;
     display: flex;
     border: 1px solid white;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     min-width: 200px;
     max-width: 200px;
     border-radius: 2px;
+    position: relative;
 }
 
 .file-folder-list .files-photo {
     margin: 0.5rem;
     cursor: pointer;
+    display: flex;
+    flex-direction: column;
     padding: 0.5rem;
     border: 1px solid white;
     min-width: 200px;
     max-width: 200px;
     border-radius: 2px;
+    position: relative;
+    /* Added for positioning the options menu */
+}
+
+.file-folder-list .files-photo span {
+    float: right;
 }
 
 .file-folder-list .all-folders .folders:hover {
@@ -57,6 +66,35 @@
     text-align: center;
 }
 
+
+/* Options Menu Styles */
+
+.options-menu {
+    position: absolute;
+    top: 25px;
+    /* Adjusted to position the menu below the three-dot icon */
+    left: 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+}
+
+.options-menu p {
+    margin: 0;
+    padding: 5px 10px;
+    cursor: pointer;
+    color: #333;
+}
+
+.options-menu p:hover {
+    background-color: #f0f0f0;
+}
+
 .nofile-nofolder {
     display: flex;
     justify-content: center;
@@ -70,6 +108,9 @@
     font-size: 1.5rem;
 }
 
+
+/* Responsive Styles */
+
 @media (max-width: 768px) {
     .file-folder-list .all-folders .folders,
     .file-folder-list .files-photo {
@@ -78,6 +119,11 @@
     }
     .file-folder-list .files-photo img {
         max-width: 150px;
+    }
+    .options-menu {
+        right: -20px;
+        /* Adjusted for smaller screens */
+        padding: 5px;
     }
 }
 
@@ -89,5 +135,10 @@
     }
     .file-folder-list .files-photo img {
         max-width: 100px;
+    }
+    .options-menu {
+        right: -10px;
+        /* Adjusted for even smaller screens */
+        padding: 3px;
     }
 }

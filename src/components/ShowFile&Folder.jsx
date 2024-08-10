@@ -1,11 +1,14 @@
-import React from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import './ShowFile_Folder.css'
+import toast from 'react-hot-toast'
 
 const ShowFile_Folder = ({ setCurrentFolder }) => {
     const files = useSelector((state) => state.files.files)
     const currentFolder = useSelector((state) => state.files.currentFolder);
     const { folders } = useSelector(state => state.files)
+    const [openMenuId, setOpenMenuId] = useState(null)
+    const menuRef = useRef(null);
 
     const getIconUrl = (fileName) => {
         const extension = fileName.split('.').pop().toLowerCase();
@@ -30,14 +33,47 @@ const ShowFile_Folder = ({ setCurrentFolder }) => {
         }
     };
 
+    const copyLink = (fileUrl) => {
+        try {
+            navigator.clipboard.writeText(fileUrl)
+            toast.success('Link Copied To Clipboard')
+        } catch (error) {
+            toast.error('Failed to Copy Link')
+        }
+    }
+
+    const toggleMenu = (id) => {
+        setOpenMenuId(openMenuId === id ? null : id);
+    }
+
+    useEffect(() => {
+        const handleClicks = (event) => {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setOpenMenuId(null)
+            }
+        }
+        document.addEventListener('mousedown', handleClicks);
+        return () => {
+            document.removeEventListener('mousedown', handleClicks)
+        }
+    }, [menuRef])
+
     return (
         <div>
             <div className="file-folder-list">
                 <div className='all-folders'>
                     {
                         folders.filter(folder => folder.parent === currentFolder.id).map((folder, index) => (
-                            <div className='folders' key={ index } onClick={ () => setCurrentFolder(folder) }>
-                                <h4>{ folder.name }</h4>
+                            <div className='folders' key={ index }>
+                                <span onClick={ (e) => { e.stopPropagation(); toggleMenu(folder.id); } }>⋮</span>
+                                {
+                                    openMenuId === folder.id && (
+                                        <div ref={ menuRef } className='options-menu'>
+                                            <p onClick={ () => { /* Add delete functionality here */ } }>Delete Folder</p>
+                                        </div>
+                                    )
+                                }
+                                <h4 onClick={ () => setCurrentFolder(folder) }>{ folder.name }</h4>
                             </div>
                         ))
                     }
@@ -45,22 +81,26 @@ const ShowFile_Folder = ({ setCurrentFolder }) => {
 
                 <div className='all-files'>
                     {
-
                         files.filter(file => file.folder === currentFolder.id).map((file, index) => (
-                            <div key={ index } className='files-photo' onClick={ () => window.open(file.url) }>
-                                <img src={ getIconUrl(file.url) } alt={ file.name } />
-                                <h4>{ file.name }</h4>
+                            <div key={ index } className='files-photo'>
+                                <span onClick={ (e) => { e.stopPropagation(); toggleMenu(file.id); } }>⋮</span>
+                                {
+                                    openMenuId === file.id && (
+                                        <div ref={ menuRef } className='options-menu'>
+                                            <p onClick={ () => copyLink(file.url) }>Share Link</p>
+                                            <p onClick={ () => { /* Add delete functionality here */ } }>Delete</p>
+                                        </div>
+                                    )
+                                }
+                                <img src={ getIconUrl(file.url) } alt={ file.name } onClick={ () => window.open(file.url) } />
+                                <h4 onClick={ () => window.open(file.url) }>{ file.name }</h4>
                             </div>
                         ))
                     }{
-                        files.length === 0 && folders.length === 0 && (
+                        files.length === 0 && folders.length === 0 && currentFolder.id === 'root' && (
                             <div className='nofile-nofolder'>
-
-                                <p>Let's get  starts , add new file or create new folder</p>
-
-
+                                <p>Let's get started, add a new file or create a new folder</p>
                             </div>
-
                         )
                     }
                 </div>
