@@ -1,9 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import './ShowFile_Folder.css'
 import toast from 'react-hot-toast'
+import { firestore, storage } from '../firebase'
+import { removeFolder, removeFile } from '../store/file'
+import { doc, deleteDoc, collection, query, where, getDocs } from 'firebase/firestore'
+import { ref, deleteObject } from 'firebase/storage'
 
 const ShowFile_Folder = ({ setCurrentFolder }) => {
+    const dispatch = useDispatch()
     const files = useSelector((state) => state.files.files)
     const currentFolder = useSelector((state) => state.files.currentFolder);
     const { folders } = useSelector(state => state.files)
@@ -42,6 +47,65 @@ const ShowFile_Folder = ({ setCurrentFolder }) => {
         }
     }
 
+    const handleDeleteFolder = async (folder) => {
+        try {
+            // First, delete all files in this folder
+            const filesQuery = query(
+                collection(firestore, 'files'),
+                where('folder', '==', folder.id)
+            );
+            const filesSnapshot = await getDocs(filesQuery);
+
+            // Delete each file from Firestore and Storage
+            const fileDeletePromises = filesSnapshot.docs.map(async (fileDoc) => {
+                const fileData = fileDoc.data();
+                // Delete file from Storage
+                const fileRef = ref(storage, fileData.url);
+                await deleteObject(fileRef);
+
+                // Delete file document from Firestore
+                await deleteDoc(doc(firestore, 'files', fileDoc.id));
+
+                // Remove file from Redux store
+                dispatch(removeFile(fileDoc.id));
+            });
+
+            await Promise.all(fileDeletePromises);
+
+            // Delete the folder document
+            await deleteDoc(doc(firestore, 'folders', folder.id));
+
+            // Remove folder from Redux store
+            dispatch(removeFolder(folder.id));
+
+            toast.success('Folder and its contents Deleted Successfully');
+            setOpenMenuId(null);
+        } catch (error) {
+            console.error('Error deleting folder:', error);
+            toast.error('Failed to Delete Folder');
+        }
+    }
+
+    const handleDeleteFile = async (file) => {
+        try {
+            // Delete file from Storage
+            const fileRef = ref(storage, file.url);
+            await deleteObject(fileRef);
+
+            // Delete file document from Firestore
+            await deleteDoc(doc(firestore, 'files', file.id));
+
+            // Remove file from Redux store
+            dispatch(removeFile(file.id));
+
+            toast.success('File Deleted Successfully');
+            setOpenMenuId(null);
+        } catch (error) {
+            console.error('Error deleting file:', error);
+            toast.error('Failed to Delete File');
+        }
+    }
+
     const toggleMenu = (id) => {
         setOpenMenuId(openMenuId === id ? null : id);
     }
@@ -69,7 +133,7 @@ const ShowFile_Folder = ({ setCurrentFolder }) => {
                                 {
                                     openMenuId === folder.id && (
                                         <div ref={ menuRef } className='options-menu'>
-                                            <p onClick={ () => { /* Add delete functionality here */ } }>Delete Folder</p>
+                                            <p onClick={ () => handleDeleteFolder(folder) }>Delete Folder</p>
                                         </div>
                                     )
                                 }
@@ -88,7 +152,7 @@ const ShowFile_Folder = ({ setCurrentFolder }) => {
                                     openMenuId === file.id && (
                                         <div ref={ menuRef } className='options-menu'>
                                             <p onClick={ () => copyLink(file.url) }>Share Link</p>
-                                            <p onClick={ () => { /* Add delete functionality here */ } }>Delete</p>
+                                            <p onClick={ () => handleDeleteFile(file) }>Delete</p>
                                         </div>
                                     )
                                 }
